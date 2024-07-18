@@ -1,4 +1,4 @@
-# ALX Backend - ALX & Holberton School
+# ALX Backend - Specialization
 
 ## Description
 
