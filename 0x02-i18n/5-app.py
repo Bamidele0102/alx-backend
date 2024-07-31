@@ -1,22 +1,26 @@
 #!/usr/bin/env python3
-"""Parametrize templates."""
-from flask import Flask, render_template, request, g
+"""A Flask application"""
+from flask import Flask, g, render_template, request
 from flask_babel import Babel
 from typing import Dict, Union
 
-
+# Create the app
 app = Flask(__name__)
-babel = Babel(app)
 
 
-class Config(object):
-    """Babel configuration."""
-    LANGUAGES = ["en", "fr"]
-    BABEL_DEFAULT_LOCALE = "en"
-    BABEL_DEFAULT_TIMEZONE = "UTC"
+class Config:
+    """Flask app configuration class"""
+    LANGUAGES = ['en', 'fr']
+    BABEL_DEFAULT_LOCALE = 'en'
+    BABEL_DEFAULT_TIMEZONE = 'UTC'
 
 
+# Configure the app
 app.config.from_object(Config)
+app.url_map.strict_slashes = False
+
+# Set up Babel
+babel = Babel(app)
 
 
 @babel.localeselector
@@ -30,7 +34,7 @@ def get_locale():
     if lang and lang in app.config['LANGUAGES']:
         return lang
 
-    # Return the default preference from the browser
+    # Return the default preference
     return request.accept_languages.best_match(app.config['LANGUAGES'])
 
 
@@ -62,13 +66,11 @@ def before_request() -> None:
     g.user = get_user()
 
 
-@app.route('/', strict_slashes=False)
+@app.route('/')
 def index():
-    """GET /
-    Return: 5-index.html
-    """
+    """The Index route"""
     return render_template('5-index.html', user=g.user)
 
 
-if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port="5000")
+if __name__ == '__main__':
+    app.run()
