@@ -2,7 +2,7 @@
 """Parametrize templates."""
 from flask import Flask, render_template, request, g
 from flask_babel import Babel
-from typing import Dict, Union, _
+from typing import Dict, Union
 
 
 app = Flask(__name__)
@@ -48,7 +48,7 @@ def get_user() -> Union[Dict, None]:
     """
     try:
         user_id = int(request.args.get('login_as'))
-    except (ValueError, TypeError):
+    except BaseException:
         return None
 
     return users.get(user_id)
