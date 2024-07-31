@@ -18,6 +18,7 @@ class Config:
 
 # Configure the app
 app.config.from_object(Config)
+app.url_map.strict_slashes = False
 
 # Set up Babel
 babel = Babel(app)
@@ -81,13 +82,11 @@ def before_request() -> None:
     flask.g.user = get_user()
 
 
-@app.route('/', strict_slashes=False)
+@app.route('/')
 def index():
-    """GET /
-    Return: 5-index.html
-    """
+    """The Index route"""
     return render_template('6-index.html', user=flask.g.user)
 
 
-if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port="5000")
+if __name__ == '__main__':
+    app.run()
