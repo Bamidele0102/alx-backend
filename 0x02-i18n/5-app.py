@@ -1,27 +1,22 @@
 #!/usr/bin/env python3
-"""A Flask application"""
-from flask import Flask, g, render_template, request
+"""Parametrize templates."""
+from flask import Flask, render_template, request, g
 from flask_babel import Babel
 from typing import Dict, Union
 
-# Create the app
+
 app = Flask(__name__)
-
-
-class Config:
-    """Flask app configuration class"""
-    LANGUAGES = ['en', 'fr']
-    BABEL_DEFAULT_LOCALE = 'en'
-    BABEL_DEFAULT_TIMEZONE = 'UTC'
-
-
-# Configure the app
-app.config.from_object(Config)
-app.url_map.strict_slashes = False
-
-# Set up Babel
 babel = Babel(app)
 
+
+class Config(object):
+    """Babel configuration."""
+    LANGUAGES = ["en", "fr"]
+    BABEL_DEFAULT_LOCALE = "en"
+    BABEL_DEFAULT_TIMEZONE = "UTC"
+
+
+app.config.from_object(Config)
 
 @babel.localeselector
 def get_locale():
@@ -34,7 +29,7 @@ def get_locale():
     if lang and lang in app.config['LANGUAGES']:
         return lang
 
-    # Return the default preference
+    # Return the default preference from the browser
     return request.accept_languages.best_match(app.config['LANGUAGES'])
 
 
@@ -47,8 +42,8 @@ users = {
 
 
 def get_user() -> Union[Dict, None]:
-    """Return a user dictionary, or None if the ID
-    cannot be found or if login_as was not passed
+    """Return a user dictionary, or None if the ID
+    cannot be found or if login_as was not passed
     """
     try:
         user_id = int(request.args.get('login_as'))
@@ -60,17 +55,19 @@ def get_user() -> Union[Dict, None]:
 
 @app.before_request
 def before_request() -> None:
-    """Should use get_user to find a user if any,
-    and set it as a global on flask.g.user
+    """Should use get_user to find a user if any,
+    and set it as a global on flask.g.user
     """
     g.user = get_user()
 
 
-@app.route('/')
+@app.route('/', strict_slashes=False)
 def index():
-    """The Index route"""
+    """GET /
+    Return: 5-index.html
+    """
     return render_template('5-index.html', user=g.user)
 
 
-if __name__ == '__main__':
-    app.run()
+if __name__ == "__main__":
+    app.run(debug=True, host="0.0.0.0", port="5000")
