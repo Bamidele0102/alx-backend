@@ -48,7 +48,7 @@ def get_user() -> Union[Dict, None]:
     """
     try:
         user_id = int(request.args.get('login_as'))
-    except BaseException:
+    except (ValueError, TypeError):
         return None
 
     return users.get(user_id)
