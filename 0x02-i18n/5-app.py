@@ -33,6 +33,7 @@ def get_locale():
     # Return the default preference from the browser
     return request.accept_languages.best_match(app.config['LANGUAGES'])
 
+
 users = {
     1: {"name": "Balou", "locale": "fr", "timezone": "Europe/Paris"},
     2: {"name": "Beyonce", "locale": "en", "timezone": "US/Central"},
